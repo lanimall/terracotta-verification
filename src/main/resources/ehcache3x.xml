@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="xsds/ehcache3.xsd" updateCheck="false"
+         monitoring="autodetect" name="CacheMgrUnderTest">
+
+    <diskStore path="java.io.tmpdir"/>
+
+    <sizeOfPolicy maxDepth="1000" maxDepthExceededBehavior="abort"/>
+
+    <terracottaConfig url="${tc.connect.url}"/>
+
+    <defaultCache eternal="false" maxElementsInMemory="100000"
+                  timeToIdleSeconds="120" timeToLiveSeconds="120" maxElementsOnDisk="10000000"
+                  statistics="true"/>
+
+    <cache name="Users" maxEntriesLocalHeap="50000" eternal="false"
+           timeToLiveSeconds="120" maxBytesLocalOffHeap="256M" maxElementsOnDisk="1000000"
+           statistics="true">
+        <sizeOfPolicy maxDepth="100" maxDepthExceededBehavior="abort"/>
+
+        <searchable keys="false" values="false">
+            <searchAttribute name="id" expression="value.id"/>
+            <searchAttribute name="userName" expression="value.userName"/>
+            <searchAttribute name="firstName" expression="value.firstName"/>
+            <searchAttribute name="middleName" expression="value.middleName"/>
+            <searchAttribute name="lastName" expression="value.lastName"/>
+            <searchAttribute name="fullName" class="org.terracotta.utils.domain.FullNameExtractor"/>
+            <searchAttribute name="rewardPoints" expression="value.rewardPoints"/>
+            <searchAttribute name="dob" expression="value.dob"/>
+            <searchAttribute name="occupation" expression="value.occupation"/>
+            <searchAttribute name="occupation" expression="value.occupation"/>
+            <searchAttribute name="address.line1" expression="value.address.line1"/>
+            <searchAttribute name="address.line2" expression="value.address.line2"/>
+            <searchAttribute name="address.city" expression="value.address.city"/>
+            <searchAttribute name="address.state" expression="value.address.state"/>
+            <searchAttribute name="address.stateCode" expression="value.address.stateCode"/>
+            <searchAttribute name="address.zip" expression="value.address.zip"/>
+            <searchAttribute name="address.addressCategory.zip" expression="value.address.addressCategory.type"/>
+            <searchAttribute name="address.addressCategory.subType" expression="value.address.addressCategory.subType"/>
+        </searchable>
+
+        <terracotta>
+            <nonstop enabled="true" immediateTimeout="false"
+                     timeoutMillis="5000">
+                <timeoutBehavior type="exception"/>
+            </nonstop>
+        </terracotta>
+    </cache>
+</ehcache>

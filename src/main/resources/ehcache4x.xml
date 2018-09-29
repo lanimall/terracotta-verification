@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="xsds/ehcache4.xsd" updateCheck="false"
+         monitoring="autodetect" dynamicConfig="true" name="TerracottaVerificationTest"
+         maxBytesLocalHeap="1G" maxBytesLocalOffHeap="10G"
+        >
+
+    <diskStore path="java.io.tmpdir"/>
+
+    <sizeOfPolicy maxDepth="1000" maxDepthExceededBehavior="abort"/>
+
+    <terracottaConfig url="${tc.connect.url}" rejoin="true" />
+
+    <!--<terracottaConfig url="${tc.connect.url}" rejoin="true">-->
+        <!--<tc-config>-->
+            <!--<servers>-->
+                <!--<server host="tcvm" name="Server1"/>-->
+                <!--<server host="tcvm" name="Server2"/>-->
+            <!--</servers>-->
+            <!--<clients>-->
+                <!--<logs>app/logs-%i</logs>-->
+            <!--</clients>-->
+        <!--</tc-config>-->
+    <!--</terracottaConfig>-->
+
+
+    <defaultCache eternal="false" maxElementsInMemory="100000"
+                  timeToIdleSeconds="120" timeToLiveSeconds="120" maxElementsOnDisk="1000000"/>
+
+    <!-- copyOnRead="true" -->
+    <cache name="Customers" maxBytesLocalHeap="50%" eternal="false"
+           overflowToOffHeap="true" maxBytesLocalOffHeap="1G" timeToLiveSeconds="600"
+           maxEntriesInCache="1000000">
+
+        <terracotta>
+            <nonstop enabled="true" immediateTimeout="true" timeoutMillis="10000">
+                <!--<timeoutBehavior type="noop"/>-->
+                <timeoutBehavior type="exception" />
+            </nonstop>
+        </terracotta>
+
+        <searchable keys="true" values="false" allowDynamicIndexing="false">
+            <searchAttribute name="id" expression="value.id"/>
+            <searchAttribute name="userName" expression="value.userName"/>
+            <searchAttribute name="firstName" expression="value.firstName"/>
+            <searchAttribute name="lastName" expression="value.lastName"/>
+            <searchAttribute name="fullName" class="org.terracotta.utils.domain.FullNameExtractor"/>
+            <searchAttribute name="middleName" expression="value.middleName"/>
+            <searchAttribute name="rewardPoints" expression="value.rewardPoints"/>
+            <searchAttribute name="dob" expression="value.dob"/>
+            <searchAttribute name="occupation" expression="value.occupation"/>
+            <searchAttribute name="address.line1" expression="value.address.line1"/>
+            <searchAttribute name="address.line2" expression="value.address.line2"/>
+            <searchAttribute name="address.city" expression="value.address.city"/>
+            <searchAttribute name="address.state" expression="value.address.state"/>
+            <searchAttribute name="address.stateCode" expression="value.address.stateCode"/>
+            <searchAttribute name="address.zip" expression="value.address.zip"/>
+            <searchAttribute name="address.addressCategory.zip" expression="value.address.addressCategory.type"/>
+            <searchAttribute name="address.addressCategory.subType" expression="value.address.addressCategory.subType"/>
+        </searchable>
+
+        <persistence strategy="distributed" />
+    </cache>
+</ehcache>

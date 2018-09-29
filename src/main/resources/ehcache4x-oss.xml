@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="xsds/ehcache4.xsd" updateCheck="false"
+         monitoring="autodetect" dynamicConfig="true" name="TerracottaVerificationTest">
+
+    <diskStore path="java.io.tmpdir"/>
+
+    <sizeOfPolicy maxDepth="1000" maxDepthExceededBehavior="abort"/>
+
+    <terracottaConfig url="${tc.connect.url}" rejoin="true"/>
+
+    <defaultCache eternal="false" maxElementsInMemory="100000"
+                  timeToIdleSeconds="120" timeToLiveSeconds="120" maxElementsOnDisk="1000000"/>
+
+    <cache name="Customers" maxEntriesLocalHeap="50000" eternal="false"
+           timeToLiveSeconds="300" timeToIdleSeconds="120" maxEntriesInCache="1000000">
+        <terracotta>
+            <nonstop enabled="true" immediateTimeout="true" timeoutMillis="10000">
+                <!--<timeoutBehavior type="localReads"/>-->
+                <timeoutBehavior type="exception" />
+            </nonstop>
+        </terracotta>
+    </cache>
+</ehcache>
